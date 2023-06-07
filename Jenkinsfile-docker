@@ -1,0 +1,35 @@
+pipeline {
+    agent {
+        node {
+            label 't059-runner'
+        }
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git credentialsId: 'ca-git-access', branch: 'development', url: "https://git.cloudavise.com/visops/t059/deploy-on-docker.git"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('prepare') {
+            steps {
+                sh "ansible-vault decrypt --vault-id /opt/vault_id ec2-1.pem"
+                sh "chmod 400 ec2-1.pem"
+                sh "chmod +x deploy_script.sh"
+                sh "./deploy_script.sh docker-prepare"
+            }
+        }
+        stage('deploy') {
+            steps {
+                sh "./deploy_script.sh docker-deploy"
+            }
+        }
+    }
+}
