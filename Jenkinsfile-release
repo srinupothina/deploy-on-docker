@@ -16,7 +16,7 @@ pipeline {
                     def latestImageName = "srinu9666/promote-release:latest"
 
                     withCredentials([
-                        usernamePassword(credentialsId: 'dockerhubcreds', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')
+                        usernamePassword(credentialsId: 'dockerhub-sr', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')
                     ]) {
                         sshagent(credentials: ['t059']) {
                             sh """
